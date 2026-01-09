@@ -1,0 +1,332 @@
+/* ==================== STYLE HOTEL ==================== */
+/* CSS Sederhana dengan Class Bahasa Indonesia */
+
+/* ===== DASAR ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* ===== WADAH UTAMA ===== */
+.wadah {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* ===== JUDUL ===== */
+.judul {
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.judul-kecil {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* ===== TAUTAN / LINK ===== */
+.tautan {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.tautan:hover {
+    text-decoration: underline;
+}
+
+.tautan-tombol {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.tautan-tombol:hover {
+    background: #0056b3;
+}
+
+.tautan-danger {
+    background: #dc3545;
+}
+
+.tautan-danger:hover {
+    background: #c82333;
+}
+
+.tautan-sukses {
+    background: #28a745;
+}
+
+.tautan-sukses:hover {
+    background: #218838;
+}
+
+/* ===== NAVIGASI ===== */
+.navigasi {
+    margin-bottom: 20px;
+}
+
+.navigasi a {
+    margin-right: 15px;
+}
+
+/* ===== TABEL ===== */
+.tabel {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.tabel th, .tabel td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabel th {
+    background: #007bff;
+    color: white;
+}
+
+.tabel tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.tabel tr:hover {
+    background: #f1f1f1;
+}
+
+.tabel-tengah {
+    text-align: center;
+}
+
+/* ===== FORMULIR ===== */
+.formulir {
+    max-width: 500px;
+}
+
+.kolom-input {
+    margin-bottom: 15px;
+}
+
+.kolom-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input-teks, .input-angka, .input-email, .input-password, .input-tanggal, .pilihan, .area-teks {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.input-teks:focus, .input-angka:focus, .input-email:focus, .input-password:focus, .input-tanggal:focus, .pilihan:focus, .area-teks:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.input-file {
+    padding: 5px 0;
+}
+
+/* ===== TOMBOL ===== */
+.tombol {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tombol-utama {
+    background: #007bff;
+    color: white;
+}
+
+.tombol-utama:hover {
+    background: #0056b3;
+}
+
+.tombol-sukses {
+    background: #28a745;
+    color: white;
+}
+
+.tombol-sukses:hover {
+    background: #218838;
+}
+
+.tombol-bahaya {
+    background: #dc3545;
+    color: white;
+}
+
+.tombol-bahaya:hover {
+    background: #c82333;
+}
+
+/* ===== PESAN ===== */
+.pesan-sukses {
+    background: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #c3e6cb;
+}
+
+.pesan-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+}
+
+.pesan-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #bee5eb;
+}
+
+/* ===== GAMBAR ===== */
+.gambar-kecil {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.gambar-sedang {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.gambar-besar {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* ===== KOTAK ===== */
+.kotak {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.kotak-header {
+    text-align: center;
+    padding: 30px;
+}
+
+/* ===== MENU ===== */
+.daftar-menu {
+    list-style: none;
+}
+
+.daftar-menu li {
+    margin-bottom: 10px;
+}
+
+.daftar-menu a {
+    display: block;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+}
+
+.daftar-menu a:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* ===== UTILITAS ===== */
+.teks-tengah {
+    text-align: center;
+}
+
+.teks-kanan {
+    text-align: right;
+}
+
+.teks-merah {
+    color: #dc3545;
+}
+
+.teks-hijau {
+    color: #28a745;
+}
+
+.teks-biru {
+    color: #007bff;
+}
+
+.margin-atas {
+    margin-top: 15px;
+}
+
+.margin-bawah {
+    margin-bottom: 15px;
+}
+
+.spasi {
+    margin: 10px 0;
+}
+
+/* ===== AKSI TABEL ===== */
+.aksi a {
+    margin-right: 8px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.aksi .edit {
+    background: #ffc107;
+    color: #333;
+}
+
+.aksi .hapus {
+    background: #dc3545;
+    color: white;
+}
+
+.aksi .lihat {
+    background: #17a2b8;
+    color: white;
+}
