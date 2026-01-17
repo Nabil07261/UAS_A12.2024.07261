@@ -19,13 +19,24 @@ class PDF extends FPDF
     }
 }
 
+// Filter bulan dan tahun
+$bulan = $_GET['bulan'] ?? '';
+$tahun = $_GET['tahun'] ?? date('Y');
+$bulan_nama = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
 // Query untuk mengambil data transaksi
 $sql = "SELECT m.*, p.nama, b.no_kamar as kamar, t.tipe 
         FROM menyewa m 
         JOIN penyewa p ON m.id_cust = p.id_cust 
         JOIN bedroom b ON m.no_kamar = b.no_kamar 
         JOIN tipe_kamar t ON b.id_kamar = t.id_kamar
-        ORDER BY m.id_sewa DESC";
+        WHERE YEAR(m.tgl_check_in) = '$tahun'";
+
+if (!empty($bulan)) {
+    $sql .= " AND MONTH(m.tgl_check_in) = '$bulan'";
+}
+$sql .= " ORDER BY m.tgl_check_in DESC";
+
 $result = mysqli_query($koneksi, $sql);
 
 // Membuat objek PDF dengan orientasi Landscape
@@ -36,9 +47,18 @@ $pdf->AddPage();
 $pdf->SetFont('Arial', 'B', 16);
 $pdf->Cell(277, 10, 'Laporan Data Transaksi Sewa Kamar Hotel', 0, 1, 'C');
 
+// Periode laporan
+$pdf->SetFont('Arial', 'B', 12);
+if (!empty($bulan)) {
+    $periode = "Periode: " . $bulan_nama[(int) $bulan] . " " . $tahun;
+} else {
+    $periode = "Periode: Tahun " . $tahun;
+}
+$pdf->Cell(277, 8, $periode, 0, 1, 'C');
+
 // Tanggal cetak
 $pdf->SetFont('Arial', '', 10);
-$pdf->Cell(277, 10, 'Tanggal Cetak: ' . date('d-m-Y H:i:s'), 0, 1, 'C');
+$pdf->Cell(277, 8, 'Tanggal Cetak: ' . date('d-m-Y H:i:s'), 0, 1, 'C');
 
 // Memberikan jarak sebelum tabel 
 $pdf->Ln(5);

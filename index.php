@@ -2,71 +2,80 @@
 session_start();
 include 'koneksi.php';
 
+// Cek jika sudah login
 if (isset($_SESSION['username'])) {
     header("location:menu.php");
     exit;
 }
+
+// Proses login (harus sebelum output HTML)
+$error = '';
+if (isset($_POST['login'])) {
+    $username = mysqli_real_escape_string($koneksi, $_POST['username']);
+    $password = $_POST['password'];
+
+    $result = mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$username' LIMIT 1");
+    $user = mysqli_fetch_assoc($result);
+
+    if ($user) {
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['nama'] = $user['nama'];
+            $_SESSION['foto'] = $user['foto'];
+            header("location:menu.php");
+            exit;
+        } else {
+            $error = "Password salah!";
+        }
+    } else {
+        $error = "Username tidak ditemukan!";
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Login - Hotel System</title>
+    <title>Login - Sistem Manajemen Hotel</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 
 <body>
-    <div class="wadah">
-        <div class="kotak-header">
-            <h1 class="judul">LOGIN</h1>
-            <p class="judul-kecil">Sistem Manajemen Hotel</p>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">🏨</div>
+                <h1 class="auth-title">Selamat Datang</h1>
+                <p class="auth-subtitle">Sistem Manajemen Hotel</p>
+            </div>
+
+            <?php if ($error): ?>
+                <div class="alert alert-danger"><?= $error ?></div>
+            <?php endif; ?>
+
+            <form method="post">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="Masukkan username" required
+                        autofocus>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Masukkan password"
+                        required>
+                </div>
+                <button type="submit" name="login" class="btn-auth">Masuk</button>
+            </form>
+
+            <div class="auth-link">
+                Belum punya akun? <a href="register.php">Daftar disini</a>
+            </div>
         </div>
-
-        <form method="post" class="formulir" style="margin: 0 auto;">
-            <div class="kolom-input">
-                <label for="username">Username :</label>
-                <input type="text" name="username" id="username" class="input-teks" required autofocus>
-            </div>
-            <div class="kolom-input">
-                <label for="password">Password :</label>
-                <input type="password" name="password" id="password" class="input-password" required>
-            </div>
-            <div class="kolom-input">
-                <button type="submit" name="login" class="tombol tombol-utama">Login</button>
-            </div>
-        </form>
-
-        <p class="teks-tengah margin-atas">
-            <a href="register.php" class="tautan">Register</a>
-        </p>
-
-        <?php
-        if (isset($_POST['login'])) {
-            $username = mysqli_real_escape_string($koneksi, $_POST['username']);
-            $password = $_POST['password'];
-
-            $result = mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$username' LIMIT 1");
-            $user = mysqli_fetch_assoc($result);
-
-            if ($user) {
-                if (password_verify($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['nama'] = $user['nama'];
-                    $_SESSION['foto'] = $user['foto'];
-                    header("location:menu.php");
-                    exit;
-                } else {
-                    echo "<p class='pesan-error teks-tengah'>Password salah!</p>";
-                }
-            } else {
-                echo "<p class='pesan-error teks-tengah'>Username tidak ditemukan!</p>";
-            }
-        }
-        ?>
     </div>
 </body>
 

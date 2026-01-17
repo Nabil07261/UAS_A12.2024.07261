@@ -20,66 +20,73 @@ if (isset($_SESSION['user_id'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Register - Hotel Room Rental System</title>
+    <title>Register - Sistem Manajemen Hotel</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 
 <body>
-    <div class="wadah">
-        <div class="kotak-header">
-            <h1 class="judul">Register</h1>
-            <p class="judul-kecil">Hotel Room Rental System</p>
+    <div class="auth-container register">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">🏨</div>
+                <h1 class="auth-title">Buat Akun Baru</h1>
+                <p class="auth-subtitle">Sistem Manajemen Hotel</p>
+            </div>
+
+            <?php if ($error): ?>
+                <div class="alert alert-danger"><?= $error ?></div>
+            <?php endif; ?>
+
+            <?php if ($success): ?>
+                <div class="alert alert-success"><?= $success ?></div>
+            <?php endif; ?>
+
+            <form action="SimpanRegister.php" method="POST" enctype="multipart/form-data" id="formRegister">
+                <div class="form-group">
+                    <label class="form-label">Foto Profil</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="foto" accept="image/*" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" minlength="3" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="4-20 karakter, huruf dan angka" pattern="[a-zA-Z0-9]{4,20}" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Min. 6 karakter" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Ulangi password" minlength="6" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth">Daftar</button>
+            </form>
+
+            <div class="auth-link">
+                Sudah punya akun? <a href="index.php">Masuk disini</a>
+            </div>
         </div>
-
-        <?php if ($error): ?>
-            <p class="pesan-error"><?= $error ?></p>
-        <?php endif; ?>
-
-        <?php if ($success): ?>
-            <p class="pesan-sukses"><?= $success ?></p>
-        <?php endif; ?>
-
-        <form action="SimpanRegister.php" method="POST" enctype="multipart/form-data" class="formulir"
-            style="margin: 0 auto;" id="formRegister">
-            <div class="kolom-input">
-                <label>Foto:</label>
-                <input type="file" name="foto" accept="image/*" class="input-file" required>
-            </div>
-            <div class="kolom-input">
-                <label>Nama Lengkap:</label>
-                <input type="text" name="nama" class="input-teks" minlength="3" required
-                    title="Nama minimal 3 karakter">
-            </div>
-            <div class="kolom-input">
-                <label>Username:</label>
-                <input type="text" name="username" class="input-teks" pattern="[a-zA-Z0-9]{4,20}" required
-                    title="Username 4-20 karakter, huruf dan angka saja">
-            </div>
-            <div class="kolom-input">
-                <label>Password:</label>
-                <input type="password" name="password" id="password" class="input-password" minlength="6" required
-                    title="Password minimal 6 karakter">
-            </div>
-            <div class="kolom-input">
-                <label>Konfirmasi Password:</label>
-                <input type="password" name="confirm_password" id="confirm_password" class="input-password"
-                    minlength="6" required title="Konfirmasi password harus sama">
-            </div>
-            <div class="kolom-input">
-                <button type="submit" class="tombol tombol-utama">Register</button>
-            </div>
-        </form>
-
-        <p class="teks-tengah margin-atas">Sudah punya akun? <a href="index.php" class="tautan">Login disini</a></p>
     </div>
 
     <script>
-        document.getElementById('formRegister').addEventListener('submit', function (e) {
+        document.getElementById('formRegister').addEventListener('submit', function(e) {
             var password = document.getElementById('password').value;
             var confirm = document.getElementById('confirm_password').value;
             if (password !== confirm) {

@@ -32,8 +32,27 @@ $result = mysqli_query(
         <main class="main">
             <header class="header">
                 <h1 class="page-title">Data Transaksi</h1>
-                <div class="header-right">
-                    <a href="CetakTransaksiPdf.php" class="btn btn-secondary" target="_blank">🖨️ Cetak PDF</a>
+                <div class="header-right" style="display: flex; gap: 12px; align-items: center;">
+                    <form action="CetakTransaksiPdf.php" method="GET" target="_blank"
+                        style="display: flex; gap: 8px; align-items: center;">
+                        <select name="bulan" class="form-control" style="width: auto; padding: 8px 12px;">
+                            <option value="">-- Semua Bulan --</option>
+                            <?php
+                            $bulan_nama = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            $bulan_query = mysqli_query($koneksi, "SELECT DISTINCT MONTH(tgl_check_in) as bulan FROM menyewa ORDER BY bulan");
+                            while ($b = mysqli_fetch_assoc($bulan_query)): ?>
+                                <option value="<?= $b['bulan'] ?>"><?= $bulan_nama[$b['bulan']] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                        <select name="tahun" class="form-control" style="width: auto; padding: 8px 12px;">
+                            <?php
+                            $tahun_query = mysqli_query($koneksi, "SELECT DISTINCT YEAR(tgl_check_in) as tahun FROM menyewa ORDER BY tahun DESC");
+                            while ($t = mysqli_fetch_assoc($tahun_query)): ?>
+                                <option value="<?= $t['tahun'] ?>"><?= $t['tahun'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                        <button type="submit" class="btn btn-secondary">🖨️ Cetak PDF</button>
+                    </form>
                     <a href="TambahTransaksi.php" class="btn btn-primary">+ Tambah Transaksi</a>
                 </div>
             </header>
