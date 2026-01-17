@@ -14,6 +14,7 @@ if (isset($_SESSION['username'])) {
 <head>
     <title>Login - Hotel System</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -55,6 +56,7 @@ if (isset($_SESSION['username'])) {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['nama'] = $user['nama'];
+                    $_SESSION['foto'] = $user['foto'];
                     header("location:menu.php");
                     exit;
                 } else {

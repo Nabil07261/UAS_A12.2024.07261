@@ -1,4 +1,5 @@
 <?php
+require_once '../auth.php';
 include "../koneksi.php";
 
 /* ================== FUNGSI SANITASI ================== */
@@ -13,17 +14,19 @@ $harga = bersih($_POST['harga_per_mlm'] ?? '');
 $max_orang = bersih($_POST['max_orang'] ?? '');
 
 /* ================== PROSES UPLOAD GAMBAR ================== */
-if (!isset($_FILES['foto']) || $_FILES['foto']['error'] != 0) {
-    die("Upload foto gagal. <a href='TambahTipeKamar.php'>Kembali</a>");
+if (!isset($_FILES['foto_kamar']) || $_FILES['foto_kamar']['error'] != 0) {
+    header('Location: TambahTipeKamar.php?error=foto');
+    exit;
 }
 
-$namaFile = $_FILES['foto']['name'];
-$tmpFile = $_FILES['foto']['tmp_name'];
+$namaFile = $_FILES['foto_kamar']['name'];
+$tmpFile = $_FILES['foto_kamar']['tmp_name'];
 $ext = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
 $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
 
 if (!in_array($ext, $allowedExt)) {
-    die("Format gambar tidak diizinkan. <a href='TambahTipeKamar.php'>Kembali</a>");
+    header('Location: TambahTipeKamar.php?error=format');
+    exit;
 }
 
 $namaFotoBaru = uniqid("foto_") . "." . $ext;
@@ -35,7 +38,8 @@ if (!file_exists($folderUpload)) {
 }
 
 if (!move_uploaded_file($tmpFile, $folderUpload . $namaFotoBaru)) {
-    die("Gagal menyimpan file gambar. <a href='TambahTipeKamar.php'>Kembali</a>");
+    header('Location: TambahTipeKamar.php?error=upload');
+    exit;
 }
 
 /* ================== SIMPAN KE DATABASE ================== */
@@ -47,9 +51,11 @@ $stmt->bind_param("sdis", $tipe, $harga, $max_orang, $namaFotoBaru);
 if ($stmt->execute()) {
     header('Location: TampilTipeKamar.php');
 } else {
-    echo "Error: " . mysqli_error($koneksi);
+    error_log("Error insert tipe kamar: " . mysqli_error($koneksi));
+    header('Location: TampilTipeKamar.php?error=1');
 }
 
 $stmt->close();
 $koneksi->close();
+exit;
 ?>

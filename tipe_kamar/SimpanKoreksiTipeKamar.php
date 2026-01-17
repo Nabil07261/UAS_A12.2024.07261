@@ -1,4 +1,5 @@
 <?php
+require_once '../auth.php';
 include "../koneksi.php";
 
 /* ================== FUNGSI SANITASI ================== */
@@ -15,16 +16,17 @@ $max_orang = bersih($_POST['max_orang'] ?? '');
 $foto_lama = $_POST['foto_lama'] ?? '';
 
 if (empty($id)) {
-    die("ERROR: ID tidak ditemukan");
+    header('Location: TampilTipeKamar.php?error=id');
+    exit;
 }
 
 /* ================== FOTO ================== */
 $xfoto = $foto_lama;
 
 // Jika user upload foto baru
-if (!empty($_FILES['foto']['name'])) {
-    $namaFile = $_FILES['foto']['name'];
-    $tmpFile = $_FILES['foto']['tmp_name'];
+if (!empty($_FILES['foto_kamar']['name'])) {
+    $namaFile = $_FILES['foto_kamar']['name'];
+    $tmpFile = $_FILES['foto_kamar']['tmp_name'];
     $ext = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
     $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -48,9 +50,11 @@ $stmt->bind_param("sdisi", $tipe, $harga, $max_orang, $xfoto, $id);
 if ($stmt->execute()) {
     header('Location: TampilTipeKamar.php');
 } else {
-    echo "Error: " . mysqli_error($koneksi);
+    error_log("Error update tipe kamar: " . mysqli_error($koneksi));
+    header('Location: TampilTipeKamar.php?error=1');
 }
 
 $stmt->close();
 $koneksi->close();
+exit;
 ?>

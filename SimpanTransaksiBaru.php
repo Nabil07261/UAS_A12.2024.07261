@@ -16,10 +16,19 @@ if ($tipe_penyewa == 'baru') {
     $no_identitas = $_POST['no_identitas'];
     $jenis_identitas = $_POST['jenis_identitas'];
 
-    // Insert penyewa baru
-    $sql = "INSERT INTO penyewa (nama, alamat, no_telp, no_identitas, jenis_identitas) VALUES ('$nama', '$alamat', '$no_telp', '$no_identitas', '$jenis_identitas')";
-    mysqli_query($koneksi, $sql) or die(mysqli_error($koneksi));
+    // Insert penyewa baru dengan prepared statement
+    $sql = "INSERT INTO penyewa (nama, alamat, no_telp, no_identitas, jenis_identitas) VALUES (?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($koneksi, $sql);
+    mysqli_stmt_bind_param($stmt, "sssss", $nama, $alamat, $no_telp, $no_identitas, $jenis_identitas);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log("Error insert penyewa: " . mysqli_error($koneksi));
+        $_SESSION['transaksi_error'] = 'Gagal menambahkan penyewa baru!';
+        header('Location: transaksi_baru.php');
+        exit;
+    }
     $id_cust = mysqli_insert_id($koneksi);
+    mysqli_stmt_close($stmt);
 } else {
     // Penyewa existing
     $id_cust = $_POST['id_cust'];
@@ -36,16 +45,31 @@ if ($lama_menginap <= 0) {
     exit;
 }
 
-// Get harga kamar
-$result = mysqli_query($koneksi, "SELECT t.harga_per_mlm FROM bedroom b JOIN tipe_kamar t ON b.id_kamar = t.id_kamar WHERE b.no_kamar = '$no_kamar'");
-$harga = mysqli_fetch_row($result)[0];
+// Get harga kamar dengan prepared statement
+$sql_harga = "SELECT t.harga_per_mlm FROM bedroom b JOIN tipe_kamar t ON b.id_kamar = t.id_kamar WHERE b.no_kamar = ?";
+$stmt_harga = mysqli_prepare($koneksi, $sql_harga);
+mysqli_stmt_bind_param($stmt_harga, "s", $no_kamar);
+mysqli_stmt_execute($stmt_harga);
+$result = mysqli_stmt_get_result($stmt_harga);
+$row = mysqli_fetch_row($result);
+$harga = $row[0] ?? 0;
+mysqli_stmt_close($stmt_harga);
 
 $total_harga = $lama_menginap * $harga;
 
-// Insert transaksi sewa
-$sql = "INSERT INTO menyewa (id_cust, no_kamar, tgl_check_in, tgl_check_out, lama_menginap, total_harga) VALUES ('$id_cust', '$no_kamar', '$tgl_check_in', '$tgl_check_out', '$lama_menginap', '$total_harga')";
-mysqli_query($koneksi, $sql) or die(mysqli_error($koneksi));
+// Insert transaksi sewa dengan prepared statement
+$sql = "INSERT INTO menyewa (id_cust, no_kamar, tgl_check_in, tgl_check_out, lama_menginap, total_harga) VALUES (?, ?, ?, ?, ?, ?)";
+$stmt = mysqli_prepare($koneksi, $sql);
+mysqli_stmt_bind_param($stmt, "isssid", $id_cust, $no_kamar, $tgl_check_in, $tgl_check_out, $lama_menginap, $total_harga);
 
-$_SESSION['transaksi_success'] = 'Transaksi berhasil ditambahkan! Total: Rp ' . number_format($total_harga, 0, ',', '.') . ' (' . $lama_menginap . ' malam)';
+if (mysqli_stmt_execute($stmt)) {
+    $_SESSION['transaksi_success'] = 'Transaksi berhasil ditambahkan! Total: Rp ' . number_format($total_harga, 0, ',', '.') . ' (' . $lama_menginap . ' malam)';
+} else {
+    error_log("Error insert transaksi: " . mysqli_error($koneksi));
+    $_SESSION['transaksi_error'] = 'Gagal menyimpan transaksi!';
+}
+
+mysqli_stmt_close($stmt);
 header('Location: transaksi_baru.php');
+exit;
 ?>

@@ -1,54 +1,79 @@
 <?php
+require_once '../auth.php';
 include "../koneksi.php";
-$data = mysqli_query($koneksi, "SELECT * FROM tipe_kamar ORDER BY id_kamar");
+
+$base_url = '../';
+$current_page = 'tipe_kamar';
+
+$result = mysqli_query($koneksi, "SELECT * FROM tipe_kamar ORDER BY tipe");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Kelola Tipe Kamar</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Tipe Kamar - Hotel System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 
 <body>
-    <div class="wadah">
-        <h1 class="judul">Data Tipe Kamar</h1>
-        
-        <div class="navigasi">
-            <a href="../menu.php" class="tautan-tombol">Kembali ke Menu</a>
-            <a href="TambahTipeKamar.php" class="tautan-tombol tautan-sukses">Tambah Tipe Kamar</a>
-        </div>
+    <div class="dashboard">
+        <?php include '../includes/sidebar.php'; ?>
 
-        <table class="tabel">
-            <tr>
-                <th>ID</th>
-                <th>Foto</th>
-                <th>Tipe</th>
-                <th>Harga per Malam</th>
-                <th>Max Orang</th>
-                <th>Aksi</th>
-            </tr>
-            <?php while ($row = mysqli_fetch_assoc($data)): ?>
-                <tr>
-                    <td class="tabel-tengah"><?= $row['id_kamar'] ?></td>
-                    <td class="tabel-tengah">
-                        <?php if (!empty($row['foto']) && file_exists("uploads/" . $row['foto'])): ?>
-                            <img src="uploads/<?= htmlspecialchars($row['foto']) ?>" class="gambar-sedang">
-                        <?php else: ?>
-                            <span>-</span>
-                        <?php endif; ?>
-                    </td>
-                    <td><?= htmlspecialchars($row['tipe']) ?></td>
-                    <td class="teks-kanan">Rp <?= number_format($row['harga_per_mlm'], 0, ',', '.') ?></td>
-                    <td class="tabel-tengah"><?= $row['max_orang'] ?></td>
-                    <td class="aksi tabel-tengah">
-                        <a href="KoreksiTipeKamar.php?id=<?= $row['id_kamar'] ?>" class="edit">Edit</a>
-                        <a href="HapusTipeKamar.php?id=<?= $row['id_kamar'] ?>" class="hapus"
-                            onclick="return confirm('Yakin hapus?')">Hapus</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
-        </table>
+        <main class="main">
+            <header class="header">
+                <h1 class="page-title">Tipe Kamar</h1>
+                <div class="header-right">
+                    <a href="TambahTipeKamar.php" class="btn btn-primary">+ Tambah Tipe</a>
+                </div>
+            </header>
+
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daftar Tipe Kamar</h3>
+                        <span style="color: var(--text-gray); font-size: 14px;">Total: <?= mysqli_num_rows($result) ?>
+                            tipe</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Foto</th>
+                                    <th>Tipe</th>
+                                    <th>Harga/Malam</th>
+                                    <th>Max Orang</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $no = 1;
+                                while ($row = mysqli_fetch_assoc($result)): ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><img src="uploads/<?= htmlspecialchars($row['foto']) ?>"
+                                                alt="<?= htmlspecialchars($row['tipe']) ?>"></td>
+                                        <td><strong><?= htmlspecialchars($row['tipe']) ?></strong></td>
+                                        <td>Rp <?= number_format($row['harga_per_mlm'], 0, ',', '.') ?></td>
+                                        <td><?= $row['max_orang'] ?> orang</td>
+                                        <td class="actions">
+                                            <a href="KoreksiTipeKamar.php?id=<?= $row['id_kamar'] ?>"
+                                                class="btn btn-sm btn-secondary">Edit</a>
+                                            <a href="HapusTipeKamar.php?id=<?= $row['id_kamar'] ?>"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Hapus tipe ini?')">Hapus</a>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 

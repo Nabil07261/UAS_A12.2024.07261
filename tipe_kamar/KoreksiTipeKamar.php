@@ -1,59 +1,82 @@
 <?php
+require_once '../auth.php';
 include "../koneksi.php";
 
-$id = $_GET['id'];
+$base_url = '../';
+$current_page = 'tipe_kamar';
 
-$result = mysqli_query($koneksi, "SELECT * FROM tipe_kamar WHERE id_kamar = '$id'");
-$data = mysqli_fetch_assoc($result);
+$id = $_GET['id'] ?? '';
+$row = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM tipe_kamar WHERE id_kamar = '$id'"));
+if (!$row) {
+    header('Location: TampilTipeKamar.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Edit Tipe Kamar</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Edit Tipe Kamar - Hotel System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/dashboard.css">
 </head>
 
 <body>
-    <div class="wadah">
-        <h1 class="judul">Edit Tipe Kamar</h1>
+    <div class="dashboard">
+        <?php include '../includes/sidebar.php'; ?>
 
-        <div class="navigasi">
-            <a href="TampilTipeKamar.php" class="tautan-tombol">Kembali</a>
-        </div>
+        <main class="main">
+            <header class="header">
+                <div>
+                    <div class="breadcrumb">
+                        <a href="TampilTipeKamar.php">Tipe Kamar</a>
+                        <span>→</span>
+                        <span>Edit</span>
+                    </div>
+                    <h1 class="page-title">Edit Tipe Kamar</h1>
+                </div>
+            </header>
 
-        <form action="SimpanKoreksiTipeKamar.php" method="POST" enctype="multipart/form-data" class="formulir">
-            <input type="hidden" name="id" value="<?= htmlspecialchars($id) ?>">
-            <input type="hidden" name="foto_lama" value="<?= htmlspecialchars($data['foto'] ?? '') ?>">
+            <div class="content">
+                <div class="card" style="max-width: 600px;">
+                    <div style="margin-bottom: 20px;">
+                        <img src="uploads/<?= htmlspecialchars($row['foto']) ?>" alt=""
+                            style="max-width: 200px; border-radius: 10px;">
+                    </div>
 
-            <div class="kolom-input">
-                <label>Foto Saat Ini:</label><br>
-                <?php if (!empty($data['foto']) && file_exists("uploads/" . $data['foto'])): ?>
-                    <img src="uploads/<?= htmlspecialchars($data['foto']) ?>" class="gambar-besar"><br><br>
-                <?php else: ?>
-                    <span>Tidak ada foto</span><br><br>
-                <?php endif; ?>
-                <label>Upload Foto Baru (kosongkan jika tidak ingin mengubah):</label>
-                <input type="file" name="foto" accept="image/*" class="input-file">
+                    <form action="SimpanKoreksiTipeKamar.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?= $row['id_kamar'] ?>">
+                        <input type="hidden" name="foto_lama" value="<?= $row['foto'] ?>">
+
+                        <div class="form-group">
+                            <label class="form-label">Foto Baru (opsional)</label>
+                            <input type="file" name="foto_kamar" class="form-control" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nama Tipe</label>
+                            <input type="text" name="tipe" class="form-control" required
+                                value="<?= htmlspecialchars($row['tipe']) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Harga per Malam (Rp)</label>
+                            <input type="number" name="harga_per_mlm" class="form-control" required min="1"
+                                value="<?= $row['harga_per_mlm'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Maksimal Orang</label>
+                            <input type="number" name="max_orang" class="form-control" required min="1" max="10"
+                                value="<?= $row['max_orang'] ?>">
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 24px;">
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            <a href="TampilTipeKamar.php" class="btn btn-secondary">Batal</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="kolom-input">
-                <label>Tipe Kamar:</label>
-                <input type="text" name="tipe" value="<?= htmlspecialchars($data['tipe']) ?>" class="input-teks"
-                    required>
-            </div>
-            <div class="kolom-input">
-                <label>Harga per Malam:</label>
-                <input type="number" name="harga_per_mlm" value="<?= $data['harga_per_mlm'] ?>" class="input-angka"
-                    required>
-            </div>
-            <div class="kolom-input">
-                <label>Max Orang:</label>
-                <input type="number" name="max_orang" value="<?= $data['max_orang'] ?>" class="input-angka" required>
-            </div>
-            <div class="kolom-input">
-                <button type="submit" class="tombol tombol-utama">Update</button>
-            </div>
-        </form>
+        </main>
     </div>
 </body>
 

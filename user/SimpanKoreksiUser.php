@@ -1,4 +1,5 @@
 <?php
+require_once '../auth.php';
 include "../koneksi.php";
 
 /* ================== FUNGSI SANITASI ================== */
@@ -15,7 +16,8 @@ $password = bersih($_POST['password'] ?? '');
 $foto_lama = $_POST['foto_lama'] ?? '';
 
 if (empty($id)) {
-    die("ERROR: ID tidak ditemukan");
+    header('Location: TampilUser.php?error=id');
+    exit;
 }
 
 /* ================== FOTO ================== */
@@ -52,9 +54,11 @@ if (!empty($password)) {
 if ($stmt->execute()) {
     header('Location: TampilUser.php');
 } else {
-    echo "Error: " . mysqli_error($koneksi);
+    error_log("Error update user: " . mysqli_error($koneksi));
+    header('Location: TampilUser.php?error=1');
 }
 
 $stmt->close();
 $koneksi->close();
+exit;
 ?>
